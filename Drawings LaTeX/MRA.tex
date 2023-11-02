@@ -1,0 +1,50 @@
+\documentclass[aspectratio=169,14pt]{beamer}
+\usepackage{tikz}
+\usepackage{animate}
+\usepackage{ifthen}
+\newcounter{a}
+\setcounter{a}{0}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{decorations.markings,patterns}
+\tikzset{
+resorte/.style={decorate,draw=magenta, decoration={coil, amplitude=4pt,segment length=5pt}},
+concreto/.style={fill,pattern=north east lines, draw=none, minimum width=0.5cm,minimum height=0.3cm,}
+}
+\begin{document}
+\frame{
+\frametitle{Sistema masa-resorte}
+\begin{center}
+  \begin{animateinline}[loop, poster = first]{25}  
+  \whiledo{\thea<135}{
+  \begin{tikzpicture}[xscale=0.075,yscale=1,
+    declare function={f(\x) = exp(-0.02*\x)*cos(10*\x);}]
+    \draw[domain=0:\thea, smooth, variable=\x, cyan] plot (\x, {f(\x)});
+    \draw[thick,->,blue] (0,0)--(135,0) node[below] {$t$}; % x axis
+    \draw[thick,->,blue] (0,-3)--(0,3) node[left] {$x$}; % y axis
+    
+%   Crear dibjo del sistema masa resorte
+    \coordinate (techo) at (0,2.2);
+    \coordinate (orig) at (0,2);
+    \coordinate (l) at (0,{f(\thea)});
+    \draw[resorte] (orig) -- (l);
+    
+    \node(wall)[concreto,minimum width=2cm] at (techo){};
+    \draw (wall.south east) -- (wall.south west);
+    
+    \node[red] at (0,{f(\thea)}){$\bullet$};
+    \node[red] at (\thea, {f(\thea)}){$\bullet$};
+    \draw[draw=black, fill=yellow!30] (-5,{f(\thea)-1}) rectangle (5,{f(\thea)});
+  
+  \end{tikzpicture}
+     \stepcounter{a}
+     \ifthenelse{\thea<135}{
+    \newframe
+     }{
+       \end{animateinline}
+    }
+ }
+\end{center}
+
+} 
+ 
+\end{document}
